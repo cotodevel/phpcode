@@ -1,0 +1,168 @@
+/* 
+    Document   : finConStyle
+    Created on : 18-may-2010, 17:34:27
+    Author     : Carlos Saez, Patricio Quiroz
+    Description: Purpose of the stylesheet follows.
+*/
+
+
+body{
+ margin:15px 0px;
+ text-align:center;
+ background-image:url(Fondo.png);
+ background-repeat:repeat;
+}
+#contenedor{
+margin:0 auto 0 auto;
+width:1000px;
+height:auto;
+border-color: #8181F7;
+background-color:#E0E0F8;
+border-right-style: solid;
+border-left-style: solid;
+border-bottom-style: solid;
+border-top-style: solid;
+border-right-width: 10px;
+border-left-width: 10px;
+border-bottom-width: 10px;
+border-top-width: 10px;
+padding-left: 20px;
+padding-top: 20px;
+padding-right: 20px;
+padding-bottom: 20px;
+}
+#contenedorMenor{
+margin:0 auto 0 auto;
+width:340px;
+height:auto;
+border-color: #8181F7;
+background-color:#E0E0F8;
+border-right-style: solid;
+border-left-style: solid;
+border-bottom-style: solid;
+border-top-style: solid;
+border-right-width: 3px;
+border-left-width: 3px;
+border-bottom-width: 3px;
+border-top-width: 3px;
+padding: 5px;
+}
+#contenedorMed{
+margin:0 auto 0 auto;
+width:440px;
+height:auto;
+border-color: #800000;
+background-color:#ffffff;
+border-right-style: solid;
+border-left-style: solid;
+border-bottom-style: solid;
+border-top-style: solid;
+border-right-width: 3px;
+border-left-width: 3px;
+border-bottom-width: 3px;
+border-top-width: 3px;
+padding: 5px;
+}
+#tablaCluster{
+margin:0 auto 0 auto;
+width:1380px;
+height:auto;
+border-color: #800000;
+background-color:#ffffff;
+border-right-style: solid;
+border-left-style: solid;
+border-bottom-style: solid;
+border-top-style: solid;
+border-right-width: 3px;
+border-left-width: 3px;
+border-bottom-width: 3px;
+border-top-width: 3px;
+padding: 100px;
+}
+#tablaSitio{
+margin:0 auto 0 auto;
+width:1450px;
+height:auto;
+border-color: #800000;
+background-color:#ffffff;
+border-right-style: solid;
+border-left-style: solid;
+border-bottom-style: solid;
+border-top-style: solid;
+border-right-width: 3px;
+border-left-width: 3px;
+border-bottom-width: 3px;
+border-top-width: 3px;
+padding: 20px;
+}
+#header1{
+height:85px;
+}
+#header2{
+height:auto;
+}
+#footer{
+height:35px;
+}
+#ingreso{
+margin: 20px auto 10px 30px;
+height:auto;
+font-weight: bold;
+/*background-color:#CC9000;*/
+padding-bottom:5px;
+text-align: center;
+}
+#main{
+height:auto;
+width: 800px;
+margin: 0px auto 20px auto;
+padding-bottom: 20px;
+}
+#logger{
+height:auto;
+width: 230px;
+margin: 40px auto 20px auto;
+padding-bottom: 20px;
+}
+.t1{
+ color:#8181F7;
+ text-align:center;
+ font-family:Arial;
+ font-size: 24px;
+ font-weight: bold;
+ text-decoration: underline;
+ text-align:center;
+ padding-bottom: 10px;
+}
+.t2{
+ font-size: 18px;
+ font-weight: bold;
+ font-family:Arial;
+ text-align:center;
+ padding-top:5px;
+color:#8181F7;
+text-decoration: underline;
+ }
+.titu{
+	font-family:Arial;
+    color: #ff0000;
+    text-indent: 30px;
+	font-weight: bold;
+	font-size:30px;
+}
+.subtitu{
+ color:#8181F7;
+ text-indent: 30px;
+	font-weight: bold;
+	font-size:15px;
+	font-family:Arial;
+ 
+}
+.topo{
+	color:#ff0000;
+    text-indent: 30px;
+	font-weight: bold;
+	font-size:15px;
+	font-family:Arial;
+ 
+}

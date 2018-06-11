@@ -1,0 +1,169 @@
+--> motor lee BD encriptada desde FTP al inicio
+--> cuando la carga la desencripta en memoria
+--> operaciones[agregar,modificar,eliminar,actualizar] han de desencriptar, luego reencriptar
+--> para guardar cambios permanentemente (online), se toman los datos de memoria, se encriptan
+y se exportan a db.txt en un archivo fisico
+
+crear agregar, modificar, eliminar registros
+
+estructura:
+
+SEP_INT=00
+SALTO=-+//+-
+
+**para estructura de db,tablas y campos en memoria**
+dbid->dbname->dbtkey->dbtname->dbfid->dbfname->dbfvalue[fvalue, lleva data adicional, tal como si campo es llave primaria(registro padre) o no]
+DBID/SEP_INT/DBNAME/SEP_INT/TKEY/SEP_INT/TNAME/SEP_INT/FID/SEP_INT/FNAME/SEP_INT/FVALUE[PK0,1-AI0,1]/SALTO
+se guarda en $_SESSION['data_main'] (estructura de BD)
+
+**para estructura de data (asociada a field ID)**
+fid->fvalue->data_id[unique]->n data[DATA_HELD] con el siguiente formato:
+
+si es auto incremental:
+ai:1 -> etiqueta: "AUTO_INCREMENT"
+
+si no es auto incremental:
+ai:0 -> etiqueta: "DATA"
+
+se guarda en $_SESSION['data_storage'] (estructura de contenido de BD)
+
+****IMPORTANTISIMO: CUANDO CREAMOS UN NUEVO CAMPO DE DATA PARA UN FIELD ID UNICO(existente),
+PEGAMOS EL FIELD ID EXISTENTE.uid(); DE CAMPO Y LO ADJUNTAMOS a data_id (n field_id <-> 1 registro)****
+
+
+//dbid->dbname (1 - n) tkey ->tname (1 - n) dbfid -> dbfname (1 - n) fvalues (un field guarda n values) y se genera como default
+[db_struct]ds_dbid:null00-00null00-00tkey:null00-00null00-00dbfid:null00-00null00-00pk0ai0-+//+-
+
+	fid->field data->field values->pos auto_inc
+	//dato auto_increment y llave primaria:1(Al generar un ingreso, se incrementa en 1 leyendo el ultimo registro)
+	[reg_struct]rs_fid:null00-00(regfield data)AUTO_INC00-00fval:pk1ai100-00pos_actual_tabla-+//+-
+	
+	fid->field data->field values
+	//dato registro comun, sin llave primaria, entero
+	[reg_struct]rs_fid:null00-00(regfield data)field_data00-00fval:pk0ai0int1-+//+-
+
+	//almacenado fisico:
+	db file->encriptado[db_struct(n)/separador/rs_struct(n)]
+
+if val: fid_n
+
+disablefidn
+
+enablefidn
+
+--
+
+se crea variable $_SESSION["c_data_temp"]: /current data temp, data previa a ingresarse
+a $_SESSION["data_main"].
+
+--
+
+formato tablas en memoria
+
+array
+0 => string 'tabla_1-+//+-campo_1ai:1' (length=24)
+1 => string 'tabla_1-+//+-campo_2ai:1' (length=24)
+2 => string 'tabla_1-+//+-campo_3ai:1' (length=24)
+3 => string 'tabla_1-+//+-campo_4ai:1' (length=24)
+4 => string 'tabla_1-+//+-campo_5ai:1' (length=24)
+5 => string 'tabla_1-+//+-campo_6ai:1' (length=24)
+6 => string 'tabla_1-+//+-campo_7ai:1' (length=24)
+7 => string 'tabla_1-+//+-campo_8ai:1' (length=24)
+8 => string 'tabla_1-+//+-campo_9ai:1' (length=24)
+9 => string 'tabla_1-+//+-campo_10ai:1' (length=25)
+
+--
+
+tablas memoria
+-> no hayan nombre de tablas duplicados
+
+BD encriptada memoria
+-> no pueden existir nombres de BD duplicados
+
+
+DB NULL 1 CAMPO NULL
+
+DB nuevo nombre DB
+tabla_1
+'campo_1ai:0'
+'campo_2ai:0'
+'campo_3ai:0'
+'campo_4ai:0'
+'campo_5ai:0'
+
+tabla_2
+'campo_1ai:0'
+'campo_2ai:0'
+'campo_3ai:0'
+'campo_4ai:0'
+'campo_5ai:0'
+'campo_6ai:0'
+
+
+**por cada BD generada, el bdid debe ser autentico **
+**el orden va por table ID, por cada tabla generada, tkey debe ser autentico**
+**al momento de asociar n registros, se agrupa por tkey, ya que un registro puede
+poseer un campo (field) nombre duplicado entre muchas tablas
+**
+
+por lo tanto, al ingresar un campo a una tabla (de tablas ya existentes con $tkey generado
+, debemos conservar dicho $tkey para nuevo campo)
+--
+
+
+//[$i]0== BID - 1== BD NAME - 2== Table ID - 3==Table Name
+	$i_BDIDTID[]=$data[$i]["dbid"];
+	$i_BDIDTID[]=$data[$i]["dbname"];
+	$i_BDIDTID[]=$data[$i]["dbtkey"];
+	$i_BDIDTID[]=$data[$i]["dbtname"];
+	
+	//[$i]0== Field ID - 1==Field Name - 2==Field Value
+	$i_FIDFNFVAL[]=$data[$i]["dbfid"];
+	$i_FIDFNFVAL[]=$data[$i]["dbfname"];
+	$i_FIDFNFVAL[]=$data[$i]["dbfvalue"];
+
+ds_dbid:null00-00null00-00tkey:null00-00null00-00dbfid:null00-00null00-00pk0ai0-+//+-rs_fid:null00-00fval:pk1ai000-00Bereta-+//+-rs_fid:null00-00fval:pk1ai100-00string_data[auto_incr]00-00n-+//+-
+
+if("rs_fid:"==substr($dump[0],0,7)){
+//reemplazamos las llaves numericas por estructura
+$rs[$i]["fid"]=$dump[0];
+$rs[$i]["fval"]=$dump[1];
+$rs[$i]["data"]=$dump[2];
+if(isset($dump[3])) $dat[$i]["n_inc"]=$dump[3];
+//fin cada linea depurada
+}
+
+
+if(strstr($dump[0],"ds_dbid")){
+//reemplazamos las llaves numericas por valores de la BD
+$ds[$i]["dbid"]=$dump[0];
+$ds[$i]["dbname"]=$dump[1];
+$ds[$i]["dbtkey"]=$dump[2];
+$ds[$i]["dbtname"]=$dump[3];
+$ds[$i]["dbfid"]=$dump[4];
+$ds[$i]["dbfname"]=$dump[5];
+$ds[$i]["dbfvalue"]=$dump[6];
+
+//fin cada linea depurada
+}
+
+
+--> db decrypt genera estructuras
+para ds_dbid...
+para rs_fid...
+
+la data en memoria debe estar encriptada
+
+por lo tanto, decrypt_bd recibe encriptado[continuamente desde memoria], desencripta y retorna
+variable desencriptada [sesion debe no ser tocada]
+
+	-> para cargar y procesar datos, debemos llamar db_decrypt, que toma variables de memoria
+
+reestructurar exportar data para que cumpla con la norma
+db struct.db struct.db n struct.reg struct.reg struct.reg n struct
+
+--
+
+al ingresar tablas en una nueva bd, tengo que limpiar la data en memoria de tablas, porque si genero otro id BD con los mismos tkey, voy a tener duplicados
+
+validar primary key

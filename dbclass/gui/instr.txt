@@ -1,0 +1,12 @@
+/add
+/modif
+/elim_data
+
+--> operaciones sobre BD
+
+-
+navigate_data/add
+navigate_data/modif
+navigate_data/elim_reg
+
+--> operaciones sobre registros (que viven dentro estructura BD)
