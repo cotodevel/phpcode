@@ -61,75 +61,75 @@ if($_SESSION['ftp_disabled']==0){
 }
 //si es coneccion local
 else if($_SESSION['ftp_disabled']==1){
-$fname=($_FILES["uploadedfile"]["name"]);
-$ext_fname=(substr($fname,-3,3));
-//Si es un archivo de texto, se sube
-if ($ext_fname=="txt"){ 
-	//rescata nombre de archivo
-	$arch_limpio=trim(strtolower(preg_replace('/\s+/', '_', $_FILES["uploadedfile"]['name']))); 
-	echo "<font color='green'><b>MODO LOCAL:</font> (directorio destino FTP no fue alcanzado)</b><p></p>";
-	echo "la ruta fisica del archivo es: ".getcwd()."/".$arch_limpio;
-	//antes de subir al servidor, verificamos que archivo sea desencriptado correctamente!
-	$output=explode($separador,file_get_contents($_FILES['uploadedfile']['tmp_name']));
-	$dec=decrypt($output[0],$output[2],$output[1]);
-	//si desencripta correctamente, continuamos
-	if($dec["pw_status"]=="OK"){
-		$_SESSION['data_main']=file_get_contents($_FILES['uploadedfile']['tmp_name']);
-		echo "<p></p>";
-		echo "*ESTADO: * <table border='1'><td><font color='blue'>BD desencriptada (<b>".$arch_limpio."</b>), y cargada en memoria correctamente!! <p><p> Ahora puedes trabajar con el motor de base de datos satisfactoriamente!</font></td></table>";
-		echo "<p></p>";
-		echo "<a href='javascript:window.close();'>Cerrar Ventana</font>";
-		//limpieza
-		unset($arch_limpio,$output,$dec);
+	$fname=($_FILES["uploadedfile"]["name"]);
+	$ext_fname=(substr($fname,-3,3));
+	//Si es un archivo de texto, se sube
+	if ($ext_fname=="txt"){ 
+		//rescata nombre de archivo
+		$arch_limpio=trim(strtolower(preg_replace('/\s+/', '_', $_FILES["uploadedfile"]['name']))); 
+		echo "<font color='green'><b>MODO LOCAL:</font> (directorio destino FTP no fue alcanzado)</b><p></p>";
+		echo "la ruta fisica del archivo es: ".getcwd()."/".$arch_limpio;
+		//antes de subir al servidor, verificamos que archivo sea desencriptado correctamente!
+		$output=explode($separador,file_get_contents($_FILES['uploadedfile']['tmp_name']));
+		$dec=decrypt($output[0],$output[2],$output[1]);
+		
+		//si desencripta correctamente, continuamos
+		if($dec["pw_status"]=="OK"){
+			$_SESSION['data_main']=file_get_contents($_FILES['uploadedfile']['tmp_name']);
+			echo "<p></p>";
+			echo "*ESTADO: * <table border='1'><td><font color='blue'>BD desencriptada (<b>".$arch_limpio."</b>), y cargada en memoria correctamente!! <p><p> Ahora puedes trabajar con el motor de base de datos satisfactoriamente!</font></td></table>";
+			echo "<p></p>";
+			echo "<a href='javascript:window.close();'>Cerrar Ventana</font>";
+			//limpieza
+			unset($arch_limpio,$output,$dec);
+		}
+		//de lo contrario, error al desencriptar archivo local subido
+		else{
+			echo "<b>*ESTADO: * <table border='1'><td><font color='red'>ERROR decrypt_db(); el documento que subiste no pas&oacute; la prueba de verificacion </font></td></table></b>";
+			echo "<p></p>";
+			echo "<a href='javascript:window.close();'>Cerrar Ventana</a>";
+		}
+
 	}
-	//de lo contrario, error al desencriptar archivo local subido
+
+	//De lo contrario validación de extension no aprobada. 
 	else{
-	echo "<b>*ESTADO: * <table border='1'><td><font color='red'>ERROR decrypt_db(); el documento que subiste no pas&oacute; la prueba de verificacion </font></td></table></b>";
-	echo "<p></p>";
-	echo "<a href='javascript:window.close();'>Cerrar Ventana</a>";
-	//fin error db decrypt
-	}
-//cierre formato archivo valido
-}
-//De lo contrario validación de extension no aprobada. 
-else{
-//de lo contrario, si archivo fue denegado para upload.. pero no presenta error al subir un archivo
-if($_FILES['uploadedfile']['error']==0){
-echo "Formato de archivo no aceptado! (<b>".$ext_fname."</b>). Solo se permite <b>(.txt)</b><p></p>";
-}
-if ($_FILES['uploadedfile']['error'] > 0){
-					echo "<body bgcolor='#666666' link='#CCCCCC' alink='#99FF66' vlink='#FFFFFF'>";
-					echo("<font color='white' size='6'> Error:" . $_FILES["uploadedfile"]["error"] . "</font><br />");
-					echo ("<p></p>");
-          				switch ($_FILES['uploadedfile']['error']){
-                   		case 1: // UPLOAD_ERR_INI_SIZE
+		//de lo contrario, si archivo fue denegado para upload.. pero no presenta error al subir un archivo
+		if($_FILES['uploadedfile']['error']==0){
+			echo "Formato de archivo no aceptado! (<b>".$ext_fname."</b>). Solo se permite <b>(.txt)</b><p></p>";
+		}
+		if ($_FILES['uploadedfile']['error'] > 0){
+			echo "<body bgcolor='#666666' link='#CCCCCC' alink='#99FF66' vlink='#FFFFFF'>";
+			echo("<font color='white' size='6'> Error:" . $_FILES["uploadedfile"]["error"] . "</font><br />");
+			echo ("<p></p>");
+          		switch ($_FILES['uploadedfile']['error']){
+					case 1: // UPLOAD_ERR_INI_SIZE
 						echo "<body bgcolor='#666666' link='#CCCCCC' alink='#99FF66' vlink='#FFFFFF'>";
                    		echo "<font color='white' size='5'> El archivo sobrepasa el limite autorizado por el servidor(archivo php.ini)! </font>";
 						echo "<p></p>";
-						break;
-                   		case 2: // UPLOAD_ERR_FORM_SIZE
+					break;
+                   	case 2: // UPLOAD_ERR_FORM_SIZE
 						echo "<body bgcolor='#666666' link='#CCCCCC' alink='#99FF66' vlink='#FFFFFF'>";
                    		echo "<font color='white' size='5'>El archivo sobrepasa el limite autorizado en el formulario index.php (MAX_FILE_SIZE) ! </font>";
                   		echo "<p></p>";
-						break;
-                   		case 3: // UPLOAD_ERR_PARTIAL
+					break;
+                   	case 3: // UPLOAD_ERR_PARTIAL
 						echo "<body bgcolor='#666666' link='#CCCCCC' alink='#99FF66' vlink='#FFFFFF'>";
                   		echo "<font color='white' size='5'>El envio del archivo ha sido suspendido durante la transferencia! </font>";
                    		echo "<p></p>";
-						break;
-                   		case 4: // UPLOAD_ERR_NO_FILE
+					break;
+                   	case 4: // UPLOAD_ERR_NO_FILE
 						echo "<body bgcolor='#666666' link='#CCCCCC' alink='#99FF66' vlink='#FFFFFF'>";
                   		echo "<font color='white' size='5'>El archivo que ha enviado tiene un tamaño nulo! (archivo inv&aacute;lido) </font>";
                  		echo "<p></p>";
-						break;
-         			   //Cierre switch
-						}
-				  //Cierre if error = 1
-				  }
-echo "<a href='javascript:window.close()'>Cerrar Ventana</a>";
-//cierre error reporting
+					break;
+				}
+		}
+
+	echo "<a href='javascript:window.close()'>Cerrar Ventana</a>";
+	}
+
 }
-//cierre si coneccion local
-}
+
 echo "</center></body>"; 
 ?><link rel="stylesheet" type="text/css" href="../libs/DWStyle.css" />
